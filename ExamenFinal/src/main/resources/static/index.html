@@ -1,0 +1,656 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>EXAMEN FINAL · PATRONES </title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Colores Base Premium */
+            --bg-body: #030712;       /* Fondo ultra oscuro */
+            --bg-panel: #111827;      /* Paneles */
+            --bg-card: #1f2937;       /* Tarjetas */
+            --bg-input: #374151;      /* Inputs */
+
+            /* Acentos */
+            --primary: #6366f1;       /* Indigo Vibrante */
+            --primary-glow: rgba(99, 102, 241, 0.4);
+            --accent: #8b5cf6;        /* Violeta */
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+
+            /* Texto */
+            --text-100: #f9fafb;
+            --text-200: #e5e7eb;
+            --text-muted: #9ca3af;
+
+            /* Bordes */
+            --border: rgba(255,255,255,0.08);
+            --radius: 12px;
+        }
+
+        * { box-sizing: border-box; outline: none; }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            background-image:
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.15) 0px, transparent 50%);
+            color: var(--text-200);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: 280px;
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            gap: 24px;
+            z-index: 10;
+        }
+
+        .brand {
+            display: flex; align-items: center; gap: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 20px; font-weight: 800;
+            color: var(--text-100);
+            letter-spacing: -1px;
+            text-shadow: 0 0 20px var(--primary-glow);
+        }
+        .brand-icon {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 8px;
+            display: grid; place-items: center;
+            box-shadow: 0 4px 15px var(--primary-glow);
+        }
+
+        .nav-group-title {
+            font-size: 11px; text-transform: uppercase; color: var(--text-muted);
+            font-weight: 700; letter-spacing: 1px; margin-bottom: 8px;
+            padding-left: 12px;
+        }
+
+        .nav-item {
+            padding: 12px 16px;
+            border-radius: var(--radius);
+            color: var(--text-200);
+            font-weight: 500; font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid transparent;
+            display: flex; align-items: center; gap: 10px;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255,255,255,0.05);
+            border-color: var(--border);
+            color: #fff;
+            transform: translateX(4px);
+        }
+        .nav-item.active {
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.1), transparent);
+            border-left: 3px solid var(--primary);
+        }
+
+        /* --- MAIN AREA --- */
+        .main { flex: 1; display: flex; flex-direction: column; position: relative; }
+
+        /* HEADER */
+        .header {
+            height: 70px;
+            padding: 0 32px;
+            display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            background: rgba(3, 7, 18, 0.6);
+            backdrop-filter: blur(10px);
+        }
+
+        .status-badge {
+            display: flex; align-items: center; gap: 8px;
+            padding: 6px 12px; border-radius: 100px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            color: var(--success); font-size: 12px; font-weight: 600;
+        }
+        .status-dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; box-shadow: 0 0 10px var(--success); }
+
+        /* WORKSPACE GRID */
+        .workspace {
+            flex: 1;
+            padding: 32px;
+            overflow-y: auto;
+            display: grid;
+            grid-template-columns: 2fr 1.2fr;
+            gap: 24px;
+        }
+
+        /* PANELS & CARDS */
+        .panel {
+            background: rgba(31, 41, 55, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex; flex-direction: column;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+
+        .panel-head {
+            padding: 16px 20px;
+            background: rgba(255,255,255,0.02);
+            border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .panel-title { font-weight: 700; color: var(--text-100); display: flex; align-items: center; gap: 8px; font-size: 14px; }
+        .pattern-badge {
+            font-size: 9px; font-family: 'JetBrains Mono'; padding: 3px 8px;
+            border-radius: 6px; background: rgba(0,0,0,0.3); color: var(--text-muted);
+            border: 1px solid var(--border); letter-spacing: 0.5px;
+        }
+
+        .panel-body { padding: 20px; display: flex; flex-direction: column; gap: 16px; flex: 1; }
+
+        /* --- CATALOGO GRID --- */
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .prod-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .prod-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.3);
+        }
+
+        .p-title { font-weight: 700; font-size: 14px; color: #fff; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .p-price { font-family: 'JetBrains Mono'; font-size: 18px; font-weight: 700; color: var(--accent); margin-bottom: 12px; }
+
+        .p-stats { display: flex; gap: 8px; margin-bottom: 12px; }
+        .stat-pill {
+            font-size: 10px; padding: 2px 8px; border-radius: 4px; font-weight: 600;
+            display: flex; align-items: center; gap: 4px;
+        }
+        .stat-stock { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+        .stat-low { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+
+        .strat-control {
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            padding: 8px;
+            border: 1px solid var(--border);
+        }
+
+        /* --- INPUTS & BUTTONS --- */
+        input, select {
+            background: var(--bg-body);
+            border: 1px solid var(--border);
+            color: var(--text-100);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            width: 100%;
+            transition: 0.2s;
+        }
+        input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
+
+        button {
+            cursor: pointer; border: none; font-family: inherit; font-weight: 600;
+            border-radius: 8px; transition: all 0.2s; font-size: 13px;
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 10px 20px;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4); }
+
+        .btn-icon { width: 32px; height: 32px; padding: 0; background: var(--bg-input); color: var(--text-200); border: 1px solid var(--border); }
+        .btn-icon:hover { background: var(--text-100); color: #000; }
+
+        .btn-danger { background: rgba(239,68,68,0.1); color: var(--danger); border: 1px solid rgba(239,68,68,0.2); }
+        .btn-danger:hover { background: var(--danger); color: white; }
+
+        /* --- TABLES --- */
+        table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 12px; }
+        th { text-align: left; padding: 12px 16px; color: var(--text-muted); border-bottom: 1px solid var(--border); font-weight: 600; }
+        td { padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.03); color: var(--text-200); }
+        tr:last-child td { border: none; }
+        tr:hover td { background: rgba(255,255,255,0.02); }
+
+        /* --- TERMINAL --- */
+        .terminal {
+            background: #09090b;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: #818cf8;
+            height: 120px;
+            overflow-y: auto;
+            line-height: 1.5;
+        }
+        .terminal::-webkit-scrollbar { width: 6px; }
+        .terminal::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+
+        /* --- TOAST --- */
+        .toast {
+            position: fixed; bottom: 30px; right: 30px;
+            background: rgba(17, 24, 39, 0.9);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--primary);
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 100;
+            font-weight: 500;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="brand">
+        <div class="brand-icon">N</div>
+        <div>EXAMEN<span style="font-weight:400; color:var(--text-muted)">FINAL</span></div>
+    </div>
+
+    <div style="margin-top: 20px;">
+        <div class="nav-group-title">Módulos Principales</div>
+        <div class="nav-item active" onclick="scrollToPanel('catalogPanel')">📦 Catálogo & Ventas</div>
+        <div class="nav-item" onclick="scrollToPanel('invPanel')">📊 Gestión Stock</div>
+        <div class="nav-item" onclick="scrollToPanel('histPanel')">📜 Historial</div>
+    </div>
+
+    <div>
+        <div class="nav-group-title">Administración</div>
+        <div class="nav-item" onclick="scrollToPanel('securityPanel')">🔐 Seguridad Proxy</div>
+        <div class="nav-item" onclick="scrollToPanel('gwPanel')">💳 Pasarelas</div>
+    </div>
+
+    <div style="margin-top:auto; padding:16px; background:rgba(255,255,255,0.03); border-radius:12px; border:1px solid var(--border)">
+        <div style="font-size:11px; color:var(--text-muted); margin-bottom:8px">Estado del Servidor</div>
+        <div class="status-badge" style="justify-content:center; width:100%">
+            <div class="status-dot"></div> ONLINE
+        </div>
+    </div>
+</div>
+
+<div class="main">
+    <header class="header">
+        <div style="font-size:14px; color:var(--text-muted)">
+            Bienvenido <span style="color:var(--text-100); font-weight:600">al sistema</span>
+        </div>
+        <div style="display:flex; gap:12px">
+            <button class="btn-primary" onclick="init()">
+                <span>↻</span> Sincronizar Sistema
+            </button>
+        </div>
+    </header>
+
+    <div class="workspace">
+
+        <div style="display:flex; flex-direction:column; gap:24px">
+
+            <div class="panel" id="catalogPanel" style="flex:1">
+                <div class="panel-head">
+                    <div class="panel-title">Catálogo de Productos <span class="pattern-badge">Iterator + Strategy</span></div>
+                    <div style="display:flex; gap:8px">
+                        <button class="btn-icon" onclick="prevPage()">◀</button>
+                        <span style="display:grid; place-items:center; font-size:12px; font-weight:600; padding:0 8px" id="pageInfo">1</span>
+                        <button class="btn-icon" onclick="nextPage()">▶</button>
+                    </div>
+                </div>
+                <div class="panel-body" style="padding:0">
+                    <div style="padding:16px; border-bottom:1px solid var(--border); display:flex; gap:12px; background:rgba(0,0,0,0.1)">
+                        <input id="search" placeholder="Buscar productos..." onkeyup="state.page=0; renderCatalog()">
+                        <select id="pageSize" style="width:100px" onchange="state.page=0; renderCatalog()">
+                            <option value="6">6 Items</option>
+                            <option value="12" selected>12 Items</option>
+                            <option value="20">20 Items</option>
+                        </select>
+                    </div>
+                    <div id="catalogGrid" class="catalog-grid" style="padding:20px"></div>
+                </div>
+            </div>
+
+            <div class="panel" id="cartPanel">
+                <div class="panel-head">
+                    <div class="panel-title">Punto de Venta <span class="pattern-badge">Command</span></div>
+                </div>
+                <div class="panel-body">
+                    <div style="display:flex; gap:12px; margin-bottom:8px">
+                        <select id="cartSel" style="flex:1"></select>
+                        <input id="cartQty" type="number" value="1" min="1" style="width:80px">
+                        <button class="btn-primary" onclick="addToCart()">Agregar</button>
+                    </div>
+                    <div style="background:rgba(0,0,0,0.2); border-radius:8px; border:1px solid var(--border); overflow:hidden">
+                        <table id="cartTable">
+                            <thead><tr><th>Producto</th><th>Cant</th><th>Subtotal</th><th></th></tr></thead>
+                            <tbody><tr><td colspan="4" style="text-align:center; padding:20px; color:var(--text-muted)">Carrito Vacío</td></tr></tbody>
+                        </table>
+                    </div>
+                    <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:12px">
+                        <select id="payMethod" style="width:150px">
+                            <option value="paypal">PayPal</option>
+                            <option value="yape">Yape</option>
+                            <option value="plin">Plin</option>
+                        </select>
+                        <button class="btn-primary" style="background:var(--success)" onclick="crearPedido()">CONFIRMAR PEDIDO</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:24px">
+
+            <div class="panel" id="invPanel" style="border-top:3px solid var(--success)">
+                <div class="panel-head">
+                    <div class="panel-title">Monitor de Stock <span class="pattern-badge">Observer</span></div>
+                </div>
+                <div class="panel-body">
+                    <label style="font-size:11px; color:var(--text-muted); font-weight:700">PRODUCTO</label>
+                    <select id="invSel" onchange="loadInvData()"></select>
+
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px">
+                        <div>
+                            <label style="font-size:11px; color:var(--text-muted); font-weight:700">STOCK REAL</label>
+                            <div style="display:flex; gap:6px; margin-top:4px">
+                                <input id="invStock" type="number">
+                                <button class="btn-icon" onclick="updateStock()">💾</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label style="font-size:11px; color:var(--text-muted); font-weight:700">MÍNIMO</label>
+                            <div style="display:flex; gap:6px; margin-top:4px">
+                                <input id="invMin" type="number">
+                                <button class="btn-icon" onclick="updateMin()">💾</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="obsLog" class="terminal">> Sistema de monitoreo listo...</div>
+                </div>
+            </div>
+
+            <div class="panel" id="histPanel" style="flex:1; max-height:400px">
+                <div class="panel-head">
+                    <div class="panel-title">Historial <span class="pattern-badge">Memento</span></div>
+                    <button class="btn-icon" style="width:24px; height:24px" onclick="loadHistory()">↻</button>
+                </div>
+                <div style="overflow-y:auto; flex:1">
+                    <table id="histTable">
+                        <thead><tr><th>ID</th><th>Estado</th><th>Acción</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="panel" id="securityPanel" style="border-top:3px solid var(--warning)">
+                <div class="panel-head">
+                    <div class="panel-title">Proxy Reportes</div>
+                </div>
+                <div class="panel-body" style="gap:10px">
+                    <select id="proxyRole">
+                        <option value="GERENTE">Rol: Gerente</option>
+                        <option value="CONTADOR">Rol: Contador</option>
+                        <option value="VENDEDOR">Rol: Vendedor</option>
+                    </select>
+                    <input type="password" id="proxyPass" placeholder="Contraseña">
+                    <button class="btn-primary" style="background:var(--warning); color:black" onclick="verReporte()">Ver Reporte</button>
+                    <div id="proxyLog" style="font-size:11px; color:var(--text-muted); min-height:16px"></div>
+                </div>
+            </div>
+
+            <div class="panel" id="gwPanel">
+                <div class="panel-head"><div class="panel-title">Pasarelas <span class="pattern-badge">Singleton</span></div></div>
+                <div class="panel-body">
+                    <div id="gwStatus" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px"></div>
+                    <div style="display:flex; gap:8px">
+                        <select id="admPas">
+                            <option value="paypal">PayPal</option>
+                            <option value="yape">Yape</option>
+                            <option value="plin">Plin</option>
+                        </select>
+                        <button class="btn-primary" style="padding:0 12px" onclick="togglePas(true)">ON</button>
+                        <button class="btn-danger" style="padding:0 12px" onclick="togglePas(false)">OFF</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div id="toast" class="toast">Notificación</div>
+
+<script>
+    // --- LÓGICA DE NEGOCIO ROBUSTA ---
+    const state = { page: 0, size: 12, cart: [], products: [] };
+    const $ = id => document.getElementById(id);
+
+    // API Wrapper con Anti-Cache & Manejo de Errores
+    const api = {
+        get: async u => (await fetch(u + (u.includes('?')?'&':'?') + `_=${Date.now()}`)).json(),
+        post: async (u,b) => (await fetch(u, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(b)})).json(),
+        put: async (u,b) => (await fetch(u, {method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(b)})).json()
+    };
+
+    function toast(msg, type='success') {
+        const t = $('toast');
+        t.innerHTML = `<span style="font-size:18px">${type==='error'?'❌':'✅'}</span> ${msg}`;
+        t.style.borderLeftColor = type==='error' ? 'var(--danger)' : 'var(--success)';
+        t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 3000);
+    }
+
+    async function init() {
+        state.products = await api.get('/inventario/productos/all');
+        renderSelectors();
+        await renderCatalog();
+        loadHistory();
+        updateGwStatus();
+    }
+
+    // --- CATALOGO ---
+    async function renderCatalog() {
+        state.size = $('pageSize').value;
+        const filter = $('search').value;
+        const data = await api.get(`/productos?pagina=${state.page}&tamano=${state.size}&filtro=${filter}`);
+
+        $('catalogGrid').innerHTML = data.map(p => {
+            const isLow = p.stock < p.stockMinimo;
+            return `
+            <div class="prod-card">
+                <div class="p-title" title="${p.nombre}">${p.nombre}</div>
+                <div class="p-price">S/ ${p.precioActual.toFixed(2)}</div>
+
+                <div class="p-stats">
+                    <div class="stat-pill ${isLow ? 'stat-low' : 'stat-stock'}">
+                        ${isLow ? '⚠️' : '●'} Stock: ${p.stock}
+                    </div>
+                    <div class="stat-pill" style="background:var(--bg-panel); color:var(--text-muted)">
+                        Min: ${p.stockMinimo}
+                    </div>
+                </div>
+
+                <div class="strat-control">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:6px">
+                        <span style="font-size:9px; font-weight:700; color:var(--text-muted)">ESTRATEGIA</span>
+                        <span style="font-size:9px; color:var(--primary)">${p.estrategiaTipo.toUpperCase()}</span>
+                    </div>
+                    <div style="display:flex; gap:4px">
+                        <select onchange="updateStrat('${p.id}', this.value)" style="padding:4px; font-size:10px; height:28px">
+                            <option value="estandar" ${p.estrategiaTipo==='estandar'?'selected':''}>Estándar</option>
+                            <option value="descuento" ${p.estrategiaTipo==='descuento'?'selected':''}>Descuento</option>
+                            <option value="dinamico" ${p.estrategiaTipo==='dinamico'?'selected':''}>Dinámico</option>
+                        </select>
+                        ${p.estrategiaTipo !== 'estandar' ? `
+                            <input type="number" step="0.05" value="${p.estrategiaValor||0}"
+                            onchange="updateStratVal('${p.id}', '${p.estrategiaTipo}', this.value)"
+                            style="width:60px; height:28px; font-size:10px; padding:4px" placeholder="+/-">
+                        ` : ''}
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+        $('pageInfo').innerText = `Pag ${state.page + 1}`;
+    }
+
+    function prevPage() { if(state.page > 0) { state.page--; renderCatalog(); } }
+    function nextPage() { state.page++; renderCatalog(); }
+
+    async function updateStrat(id, type) { await api.post(`/admin/producto/${id}/estrategia?tipo=${type}`); toast('Estrategia actualizada'); renderCatalog(); }
+    async function updateStratVal(id, type, val) { await api.post(`/admin/producto/${id}/estrategia?tipo=${type}&valor=${val}`); toast('Valor ajustado'); renderCatalog(); }
+
+    // --- CART & COMMAND ---
+    function addToCart() {
+        const id = $('cartSel').value; const qty = parseInt($('cartQty').value);
+        const p = state.products.find(x => x.id === id);
+        if(p) { state.cart.push({...p, qty}); renderCart(); }
+    }
+    function renderCart() {
+        const tb = $('cartTable').querySelector('tbody');
+        if(!state.cart.length) { tb.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px; color:var(--text-muted)">Carrito Vacío</td></tr>'; return; }
+        tb.innerHTML = state.cart.map((i, idx) => `
+            <tr><td>${i.nombre.substring(0,12)}..</td><td>${i.qty}</td><td>S/ ${(i.precioBase*i.qty).toFixed(0)}</td><td><button class="btn-danger" style="padding:2px 6px" onclick="state.cart.splice(${idx},1);renderCart()">×</button></td></tr>`).join('');
+    }
+    async function crearPedido() {
+        if(!state.cart.length) return toast('Carrito vacío', 'error');
+        try {
+            const body = { items: state.cart.map(i=>({productoId:i.id, cantidad:i.qty})), paymentMethod: $('payMethod').value };
+            const r = await api.post('/comandos/crear', body);
+
+            if(r.error) throw new Error(r.error);
+
+            toast(`Pedido ${r.id} Creado`);
+            logObs(`PEDIDO: ${r.id} | Total S/ ${r.total}`);
+            state.cart=[]; renderCart();
+
+            await renderCatalog(); await loadHistory();
+            state.products = await api.get('/inventario/productos/all');
+
+        } catch(e) { toast(e.message, 'error'); }
+    }
+
+    // --- HISTORY ---
+    async function loadHistory() {
+        const h = await api.get('/comandos/historial');
+        $('histTable').querySelector('tbody').innerHTML = h.map(x => `
+            <tr>
+                <td style="font-family:'JetBrains Mono'">${x.id}</td>
+                <td><span style="color:${x.estado==='CREADO'?'var(--success)':'var(--danger)'}; font-weight:700">${x.estado}</span></td>
+                <td>${x.estado==='CREADO'?`<button class="btn-danger" style="padding:4px 8px; font-size:10px" onclick="deshacer('${x.id}')">DESHACER</button>`:'-'}</td>
+            </tr>`).join('');
+    }
+    async function deshacer(id) {
+        if(!confirm('¿Restaurar estado anterior?')) return;
+        await api.post(`/comandos/${id}/deshacer`);
+        toast('Pedido revertido');
+        await renderCatalog(); await loadHistory();
+        state.products = await api.get('/inventario/productos/all');
+    }
+
+    // --- INVENTARIO (FIXED) ---
+    function renderSelectors() {
+        const h = state.products.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('');
+        $('invSel').innerHTML = h; $('cartSel').innerHTML = h;
+    }
+    function loadInvData() {
+        const p = state.products.find(x => x.id === $('invSel').value);
+        if(p) { $('invStock').value = p.stock; $('invMin').value = p.stockMinimo; }
+    }
+
+    // Función Blindada: parseInt + Error Check + Recarga Forzada
+    async function updateStock() {
+        const id = $('invSel').value;
+        const val = parseInt($('invStock').value);
+        const res = await api.put('/inventario/stock', { productoId: id, stock: val });
+
+        if (res.error) {
+            toast('Error: ' + res.error, 'error');
+        } else {
+            toast('Stock actualizado');
+            logObs(`STOCK: ${id} -> ${val}`);
+            await renderCatalog();
+            state.products = await api.get('/inventario/productos/all');
+        }
+    }
+
+    async function updateMin() {
+        const id = $('invSel').value;
+        const val = parseInt($('invMin').value);
+        const res = await api.put('/inventario/minimo', { productoId: id, minimo: val });
+
+        if (res.error) { toast('Error', 'error'); }
+        else {
+            toast('Mínimo actualizado');
+            await renderCatalog();
+            state.products = await api.get('/inventario/productos/all');
+        }
+    }
+    function logObs(m) { $('obsLog').innerHTML += `\n> ${m}`; $('obsLog').scrollTop=999; }
+
+    // --- PROXY ---
+    async function verReporte() {
+        try {
+            const login = await fetch('/reportes/login', {
+                method:'POST', headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({ role: $('proxyRole').value, password: $('proxyPass').value })
+            });
+            const auth = await login.json();
+            if(auth.token) {
+                const rep = await fetch('/reportes/financieros', { headers: { 'Authorization': 'Bearer ' + auth.token }});
+                const txt = await rep.text();
+                if(rep.ok) alert(txt);
+                $('proxyLog').innerHTML = rep.ok ? `<span style="color:var(--success)">> Acceso Concedido</span>` : `<span style="color:var(--danger)">> Bloqueo Proxy</span>`;
+            } else { $('proxyLog').innerHTML = `<span style="color:var(--danger)">> Credenciales Inválidas</span>`; }
+        } catch(e) { console.log(e); }
+    }
+
+    // --- PASARELAS ---
+    async function updateGwStatus() {
+        const s = await api.get('/admin/pasarelas/estado');
+        let h = ''; for(let k in s) h+=`<span style="color:${s[k]?'var(--success)':'var(--danger)'}">● ${k}</span> `;
+        $('gwStatus').innerHTML = h;
+    }
+    async function togglePas(v) {
+        await api.post(`/admin/pasarela/${$('admPas').value}/habilitar?habilitar=${v}`);
+        updateGwStatus(); toast('Configuración guardada');
+    }
+
+    init();
+</script>
+</body>
+</html>
