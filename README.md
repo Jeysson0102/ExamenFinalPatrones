@@ -54,21 +54,10 @@ Asegúrese de tener instalado:
 1.  **Clonar o descomprimir el proyecto:**
     Asegúrese de estar en la carpeta raíz (`ExamenFinal`).
 
-2.  **Compilar y Ejecutar:**
-    Abra una terminal en la raíz del proyecto y ejecute:
-
-    ```bash
-    # En Windows
-    mvn spring-boot:run
-
-    # En Mac/Linux
-    ./mvnw spring-boot:run
-    ```
-
-3.  **Acceder a la Aplicación:**
+2.  **Acceder a la Aplicación:**
     Una vez que la consola muestre `Started ExamFinalApplication`, abra su navegador y vaya a:
     
-    👉 **[http://localhost:8080](http://localhost:8080)**
+    👉 **http://localhost:8080/index.html**
 
 ---
 
