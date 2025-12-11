@@ -125,3 +125,9 @@ com.proyecto.patrones
 │   └── strategy      # Algoritmos de precio
 ├── repositorio       # Persistencia en memoria (HashMap)
 └── servicio          # Lógica de negocio y orquestación
+
+Autor: Jeysson Fernando Perez Rafael
+
+Curso: Patrones de Diseño de Software
+
+Fecha: 2025
