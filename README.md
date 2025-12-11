@@ -27,7 +27,7 @@ El sistema **Enterprise ERP** simula una tienda tecnológica con un panel admini
 
 ## 🧩 Patrones de Diseño Implementados
 
-Este proyecto implementa 6 patrones de diseño clave para resolver problemas específicos:
+Este proyecto implementa **7 patrones de diseño** clave para resolver problemas específicos:
 
 | Patrón | Tipo | Aplicación en el Proyecto | Ubicación Clave en Código |
 | :--- | :--- | :--- | :--- |
@@ -37,6 +37,7 @@ Este proyecto implementa 6 patrones de diseño clave para resolver problemas esp
 | **Memento** | Comportamiento | Guarda el estado del stock antes de un pedido para permitir la función **"Deshacer"**. | `com.proyecto.patrones.patrones.memento` |
 | **Iterator** | Comportamiento | Permite recorrer el catálogo de productos con paginación sin exponer la estructura subyacente. | `com.proyecto.patrones.controlador.CatalogoControlador` |
 | **Proxy** | Estructural | Protege el acceso a los reportes financieros, validando roles y contraseñas antes de llegar al servicio real. | `com.proyecto.patrones.patrones.proxy` |
+| **Adapter** | Estructural | Unifica la interfaz de múltiples pasarelas de pago (PayPal, Yape, Plin) para que el sistema las trate de forma homogénea. | `com.proyecto.patrones.patrones.adapter` |
 
 ---
 
@@ -53,7 +54,7 @@ Asegúrese de tener instalado:
 
 1.  **Clonar o descomprimir el proyecto:**
     Asegúrese de estar en la carpeta raíz (`ExamenFinal`).
-
+    
 2.  **Acceder a la Aplicación:**
     Una vez que la consola muestre `Started ExamFinalApplication`, abra su navegador y vaya a:
     
@@ -95,6 +96,14 @@ Para evaluar los patrones implementados, siga estos pasos en la interfaz:
 * Haga clic en "Solicitar Acceso".
 * **Resultado:** El Proxy valida las credenciales y permite el paso al servicio real, mostrando el reporte financiero.
 
+### 5. Probando **Adapter** (Pasarelas de Pago)
+* Vaya al panel **"Pasarelas (Singleton)"** (columna derecha inferior).
+* Desactive una pasarela, por ejemplo **"YAPE"** (botón OFF).
+* Intente crear un pedido seleccionando **Yape** como método de pago.
+* **Resultado:** El sistema rechaza el pedido indicando que el método no está disponible (gestión unificada de pasarelas).
+* Active **"YAPE"** (ON) e intente de nuevo.
+* **Resultado:** El pedido se procesa correctamente usando la implementación del adaptador correspondiente.
+
 ---
 
 ## 📂 Arquitectura del Proyecto
@@ -107,7 +116,7 @@ com.proyecto.patrones
 ├── dominio           # Entidades del negocio (Producto, Pedido, Usuario)
 ├── dto               # Data Transfer Objects
 ├── patrones          # IMPLEMENTACIÓN DE PATRONES
-│   ├── adapter       # Adaptadores de pago
+│   ├── adapter       # Adaptadores de pago (PayPal, Yape, Plin)
 │   ├── command       # Interfaz comando
 │   ├── iterator      # Lógica de iteración
 │   ├── memento       # Instantáneas de estado
@@ -116,9 +125,3 @@ com.proyecto.patrones
 │   └── strategy      # Algoritmos de precio
 ├── repositorio       # Persistencia en memoria (HashMap)
 └── servicio          # Lógica de negocio y orquestación
-
-Autor: Jeysson Fernando Perez Rafael
-
-Curso: Patrones de Diseño de Software
-
-Fecha: 2025
